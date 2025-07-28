@@ -21,9 +21,14 @@ $page_title = 'Transform Your Living Space';
 
 <?php include 'includes/footer.php'; ?>
 
-<!-- JavaScript -->
-<script src="<?php echo SITE_URL; ?>/assets/js/main.js"></script>
+<!-- Additional JavaScript -->
+<script src="assets/js/main.js"></script>
 <script>
     // Initialize Lucide icons
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+        console.log('✅ Lucide icons initialized');
+    }
+    
+    console.log('🎉 Page fully loaded!');
 </script> 

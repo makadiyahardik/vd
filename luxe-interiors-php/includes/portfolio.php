@@ -10,7 +10,7 @@ $projects = [
     [
         "title" => "Luxury Bedroom Suite",
         "category" => "Bedrooms",
-        "image" => "https://images.unsplash.com/photo-1540518614846-7eded47432f5?q=80&w=2070&auto=format&fit=crop"
+        "image" => "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=2070&auto=format&fit=crop"
     ],
     [
         "title" => "Contemporary Kitchen",
@@ -20,7 +20,7 @@ $projects = [
     [
         "title" => "Elegant Bathroom",
         "category" => "Bathrooms",
-        "image" => "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=2070&auto=format&fit=crop"
+        "image" => "https://images.unsplash.com/photo-1620626011761-996317b8d101?q=80&w=2070&auto=format&fit=crop"
     ],
     [
         "title" => "Cozy Reading Nook",
@@ -30,7 +30,7 @@ $projects = [
     [
         "title" => "Master Bedroom",
         "category" => "Bedrooms",
-        "image" => "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=2070&auto=format&fit=crop"
+        "image" => "https://images.unsplash.com/photo-1540518614846-7eded47432f5?q=80&w=2070&auto=format&fit=crop"
     ]
 ];
 ?>
@@ -46,40 +46,41 @@ $projects = [
             </p>
 
             <!-- Filter Buttons -->
-            <div class="flex flex-wrap justify-center gap-4 mb-12">
-                <?php foreach ($categories as $category): ?>
+            <div class="flex flex-wrap justify-center gap-4 mb-12" id="portfolio-filters">
+                <?php foreach ($categories as $index => $category): ?>
                 <button
-                    onclick="filterPortfolio('<?php echo $category; ?>')"
-                    class="filter-btn px-6 py-3 rounded-full font-medium transition-all duration-300 bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
-                    data-category="<?php echo $category; ?>"
+                    class="filter-btn px-6 py-3 rounded-full font-medium transition-all duration-300 <?php echo $index === 0 ? 'bg-amber-500 text-white shadow-lg' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'; ?>"
+                    data-category="<?php echo htmlspecialchars($category); ?>"
+                    onclick="filterPortfolio('<?php echo addslashes($category); ?>')"
                 >
                     <?php echo htmlspecialchars($category); ?>
                 </button>
                 <?php endforeach; ?>
             </div>
-        </div>
 
-        <!-- Portfolio Grid -->
-        <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php foreach ($projects as $index => $project): ?>
-            <div
-                class="portfolio-item group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 card-hover"
-                data-category="<?php echo htmlspecialchars($project['category']); ?>"
-            >
-                <img
-                    src="<?php echo htmlspecialchars($project['image']); ?>"
-                    alt="<?php echo htmlspecialchars($project['title']); ?>"
-                    class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="absolute bottom-6 left-6 text-white">
-                        <h3 class="text-xl font-bold mb-2"><?php echo htmlspecialchars($project['title']); ?></h3>
-                        <p class="text-white/80"><?php echo htmlspecialchars($project['category']); ?></p>
+            <!-- Portfolio Grid -->
+            <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <?php foreach ($projects as $index => $project): ?>
+                <div
+                    class="portfolio-item group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 card-hover"
+                    data-category="<?php echo htmlspecialchars($project['category']); ?>"
+                >
+                    <img
+                        src="<?php echo htmlspecialchars($project['image']); ?>"
+                        alt="<?php echo htmlspecialchars($project['title']); ?>"
+                        class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                        loading="lazy"
+                        onerror="this.src='https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2070&auto=format&fit=crop'"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div class="absolute bottom-6 left-6 text-white">
+                            <h3 class="text-xl font-bold mb-2"><?php echo htmlspecialchars($project['title']); ?></h3>
+                            <p class="text-white/80"><?php echo htmlspecialchars($project['category']); ?></p>
+                        </div>
                     </div>
                 </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
         </div>
     </div>
 </section> 

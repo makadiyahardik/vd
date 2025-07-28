@@ -10,8 +10,8 @@
     <!-- Open Graph tags -->
     <meta property="og:title" content="<?php echo isset($page_title) ? $page_title . ' - ' . SITE_NAME : SITE_NAME; ?>">
     <meta property="og:description" content="Transform your living space with professional interior design services.">
-    <meta property="og:image" content="<?php echo SITE_URL; ?>/assets/images/og-image.jpg">
-    <meta property="og:url" content="<?php echo SITE_URL; ?>">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+    <meta property="og:url" content="">
     <meta property="og:type" content="website">
     
     <title><?php echo isset($page_title) ? $page_title . ' - ' . SITE_NAME : SITE_NAME . ' - Transform Your Living Space'; ?></title>
@@ -33,22 +33,81 @@
                         'inter': ['Inter', 'sans-serif'],
                         'poppins': ['Poppins', 'sans-serif'],
                     },
-                    animation: {
-                        'fade-in': 'fadeIn 1s ease-in-out',
-                        'slide-up': 'slideUp 0.8s ease-out',
-                    }
-                }
-            }
+                },
+            },
         }
     </script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?php echo SITE_URL; ?>/assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- IMMEDIATE JavaScript for Navigation -->
+    <script>
+        // Global functions available immediately
+        function scrollToSection(sectionId) {
+            console.log('🎯 Scrolling to section:', sectionId);
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                console.log('✅ Scrolled to:', sectionId);
+            } else {
+                console.error('❌ Section not found:', sectionId);
+            }
+        }
+        
+        // Global portfolio filter function
+        function filterPortfolio(category) {
+            console.log(`🔍 FILTERING BY: "${category}"`);
+            
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+            
+            console.log(`Found ${filterButtons.length} buttons, ${portfolioItems.length} items`);
+
+            // Update active button
+            filterButtons.forEach(btn => {
+                const btnCategory = btn.getAttribute('data-category');
+                if (btnCategory === category) {
+                    btn.classList.remove('bg-neutral-100', 'text-neutral-700');
+                    btn.classList.add('bg-amber-500', 'text-white', 'shadow-lg');
+                    console.log(`✅ Activated: "${btnCategory}"`);
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-white', 'shadow-lg');
+                    btn.classList.add('bg-neutral-100', 'text-neutral-700');
+                }
+            });
+
+            // Filter portfolio items
+            let visibleCount = 0;
+            portfolioItems.forEach((item, index) => {
+                const itemCategory = item.getAttribute('data-category');
+                const shouldShow = category === 'All' || itemCategory === category;
+                
+                console.log(`Item ${index}: "${itemCategory}" -> ${shouldShow ? 'SHOW' : 'HIDE'}`);
+                
+                if (shouldShow) {
+                    item.style.display = 'block';
+                    item.style.opacity = '1';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            console.log(`✅ FILTER COMPLETE: ${visibleCount} items visible`);
+            return true;
+        }
+        
+        console.log('🚀 Navigation functions loaded immediately!');
+    </script>
 </head>
 <body class="min-h-screen bg-neutral-50"><?php echo "\n"; ?> 

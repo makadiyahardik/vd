@@ -3,7 +3,7 @@
 
 // Site configuration
 define('SITE_NAME', 'Luxe Interiors');
-define('SITE_URL', 'http://localhost/luxe-interiors-php');
+define('SITE_URL', ''); // Use relative URLs for better portability
 
 // Contact information
 define('CONTACT_EMAIL', 'hello@luxeinteriors.com');

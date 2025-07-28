@@ -1,11 +1,58 @@
 // Main JavaScript file for Luxe Interiors
 
+// Portfolio filtering function - MUST BE GLOBAL
+window.filterPortfolio = function(category) {
+    console.log(`🔍 FILTERING BY: "${category}"`);
+    
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+    
+    console.log(`Found ${filterButtons.length} buttons, ${portfolioItems.length} items`);
+
+    // Update active button
+    filterButtons.forEach(btn => {
+        const btnCategory = btn.getAttribute('data-category');
+        if (btnCategory === category) {
+            btn.classList.remove('bg-neutral-100', 'text-neutral-700');
+            btn.classList.add('bg-amber-500', 'text-white', 'shadow-lg');
+            console.log(`✅ Activated: "${btnCategory}"`);
+        } else {
+            btn.classList.remove('bg-amber-500', 'text-white', 'shadow-lg');
+            btn.classList.add('bg-neutral-100', 'text-neutral-700');
+        }
+    });
+
+    // Filter portfolio items
+    let visibleCount = 0;
+    portfolioItems.forEach((item, index) => {
+        const itemCategory = item.getAttribute('data-category');
+        const shouldShow = category === 'All' || itemCategory === category;
+        
+        console.log(`Item ${index}: "${itemCategory}" -> ${shouldShow ? 'SHOW' : 'HIDE'}`);
+        
+        if (shouldShow) {
+            item.style.display = 'block';
+            item.style.opacity = '1';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    console.log(`✅ FILTER COMPLETE: ${visibleCount} items visible`);
+    return true;
+};
+
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Luxe Interiors JavaScript loading...');
+    
     initNavigation();
     initPortfolioFilters();
     initContactForm();
     initScrollAnimations();
+    
+    console.log('✅ All JavaScript modules initialized successfully');
 });
 
 // Navigation functionality
@@ -57,20 +104,24 @@ function initNavigation() {
 
     // Mobile menu toggle
     let isMobileMenuOpen = false;
-    mobileMenuButton.addEventListener('click', function() {
-        isMobileMenuOpen = !isMobileMenuOpen;
-        
-        if (isMobileMenuOpen) {
-            mobileMenu.classList.add('open');
-            mobileMenuButton.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
-        } else {
-            mobileMenu.classList.remove('open');
-            mobileMenuButton.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
-        }
-        
-        // Re-initialize lucide icons
-        lucide.createIcons();
-    });
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', function() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            
+            if (isMobileMenuOpen) {
+                mobileMenu.classList.add('open');
+                mobileMenuButton.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+            } else {
+                mobileMenu.classList.remove('open');
+                mobileMenuButton.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+            }
+            
+            // Re-initialize lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    }
 
     // Add scroll event listener
     window.addEventListener('scroll', handleScroll);
@@ -92,58 +143,48 @@ function scrollToSection(sectionId) {
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         
-        if (mobileMenu.classList.contains('open')) {
+        if (mobileMenu && mobileMenu.classList.contains('open')) {
             mobileMenu.classList.remove('open');
             mobileMenuButton.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
     }
 }
 
 // Portfolio filtering functionality
 function initPortfolioFilters() {
+    console.log('🎯 Initializing portfolio filters...');
+    
     const filterButtons = document.querySelectorAll('.filter-btn');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-    // Set initial active state for "All" button
-    if (filterButtons.length > 0) {
-        filterButtons[0].classList.add('bg-amber-500', 'text-white', 'shadow-lg');
-        filterButtons[0].classList.remove('bg-neutral-100', 'text-neutral-700');
+    
+    console.log(`Found ${filterButtons.length} filter buttons and ${portfolioItems.length} portfolio items`);
+    
+    if (filterButtons.length === 0) {
+        console.error('❌ No filter buttons found!');
+        return;
     }
-}
+    
+    if (portfolioItems.length === 0) {
+        console.error('❌ No portfolio items found!');
+        return;
+    }
 
-function filterPortfolio(category) {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-
-    // Update active button
-    filterButtons.forEach(btn => {
-        const btnCategory = btn.getAttribute('data-category');
-        if (btnCategory === category) {
-            btn.classList.add('bg-amber-500', 'text-white', 'shadow-lg');
-            btn.classList.remove('bg-neutral-100', 'text-neutral-700');
-        } else {
-            btn.classList.remove('bg-amber-500', 'text-white', 'shadow-lg');
-            btn.classList.add('bg-neutral-100', 'text-neutral-700');
-        }
-    });
-
-    // Filter portfolio items
-    portfolioItems.forEach(item => {
-        const itemCategory = item.getAttribute('data-category');
+    // Add click event listeners to all filter buttons
+    filterButtons.forEach((button, index) => {
+        const category = button.getAttribute('data-category');
+        console.log(`Setting up filter button ${index}: "${category}"`);
         
-        if (category === 'All' || itemCategory === category) {
-            item.style.display = 'block';
-            // Add fade-in animation
-            item.style.opacity = '0';
-            setTimeout(() => {
-                item.style.opacity = '1';
-                item.style.transition = 'opacity 0.5s ease-in-out';
-            }, 100);
-        } else {
-            item.style.display = 'none';
-        }
+        button.addEventListener('click', function(e) {
+            console.log(`🔥 Filter button clicked: "${category}"`);
+            e.preventDefault();
+            filterPortfolio(category);
+        });
     });
+    
+    console.log('✅ Portfolio filters initialized successfully');
 }
 
 // Contact form functionality (frontend only)
@@ -161,12 +202,12 @@ function initContactForm() {
             const errorMessage = document.getElementById('form-error-message');
             
             // Hide previous messages
-            successMessage.classList.add('hidden');
-            errorMessage.classList.add('hidden');
+            if (successMessage) successMessage.classList.add('hidden');
+            if (errorMessage) errorMessage.classList.add('hidden');
             
             // Show loading state
-            submitText.classList.add('hidden');
-            loadingText.classList.remove('hidden');
+            if (submitText) submitText.classList.add('hidden');
+            if (loadingText) loadingText.classList.remove('hidden');
             submitBtn.disabled = true;
             
             // Form validation
@@ -203,7 +244,7 @@ function initContactForm() {
                 window.location.href = mailtoLink;
                 
                 // Show success message
-                successMessage.classList.remove('hidden');
+                if (successMessage) successMessage.classList.remove('hidden');
                 
                 // Reset form
                 this.reset();
@@ -211,30 +252,32 @@ function initContactForm() {
                 resetSubmitButton(submitBtn, submitText, loadingText);
                 
                 // Scroll to success message
-                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (successMessage) successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 1500);
         });
     }
 }
 
 function resetSubmitButton(submitBtn, submitText, loadingText) {
-    submitText.classList.remove('hidden');
-    loadingText.classList.add('hidden');
+    if (submitText) submitText.classList.remove('hidden');
+    if (loadingText) loadingText.classList.add('hidden');
     submitBtn.disabled = false;
 }
 
 function showFormError(message) {
     const errorMessage = document.getElementById('form-error-message');
-    errorMessage.textContent = message;
-    errorMessage.classList.remove('hidden');
-    
-    // Scroll to error message
-    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        errorMessage.classList.add('hidden');
-    }, 5000);
+    if (errorMessage) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
+        
+        // Scroll to error message
+        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            errorMessage.classList.add('hidden');
+        }, 5000);
+    }
 }
 
 function isValidEmail(email) {
@@ -262,6 +305,5 @@ function initScrollAnimations() {
     animatedElements.forEach(el => observer.observe(el));
 }
 
-// Utility function for smooth scrolling (used by inline onclick handlers)
-window.scrollToSection = scrollToSection;
-window.filterPortfolio = filterPortfolio; 
+// Expose functions globally
+window.scrollToSection = scrollToSection; 
